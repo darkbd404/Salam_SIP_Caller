@@ -11,12 +11,12 @@ plugins {
 
 android {
   namespace = "com.example"
-  compileSdk { version = release(36) { minorApiLevel = 1 } }
+  compileSdk = 36
 
   defaultConfig {
     applicationId = "com.aistudio.salamcall.app"
     minSdk = 24
-    targetSdk = 36
+    targetSdk = 35
     versionCode = 1
     versionName = "1.0"
 
@@ -31,11 +31,14 @@ android {
       keyAlias = "upload"
       keyPassword = System.getenv("KEY_PASSWORD")
     }
-    create("debugConfig") {
-      storeFile = file("${rootDir}/debug.keystore")
-      storePassword = "android"
-      keyAlias = "androiddebugkey"
-      keyPassword = "android"
+    val localDebugKeystore = file("${rootDir}/debug.keystore")
+    if (localDebugKeystore.exists()) {
+      create("debugConfig") {
+        storeFile = localDebugKeystore
+        storePassword = "android"
+        keyAlias = "androiddebugkey"
+        keyPassword = "android"
+      }
     }
   }
 
@@ -46,7 +49,11 @@ android {
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
       signingConfig = signingConfigs.getByName("release")
     }
-    debug { signingConfig = signingConfigs.getByName("debugConfig") }
+    debug {
+      if (signingConfigs.findByName("debugConfig") != null) {
+        signingConfig = signingConfigs.getByName("debugConfig")
+      }
+    }
   }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_11

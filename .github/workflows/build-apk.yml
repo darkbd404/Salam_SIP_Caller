@@ -12,11 +12,6 @@ jobs:
     name: Build Android APK
     runs-on: ubuntu-latest
 
-    env:
-      ANDROID_HOME: /usr/local/lib/android/sdk
-      GRADLE_OPTS: "-Dorg.gradle.jvmargs=\"-Xmx4g -Dfile.encoding=UTF-8 -Djava.awt.headless=true --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED\""
-      JAVA_OPTS: "--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED"
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -26,22 +21,29 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
-      - name: Accept Android SDK Licenses
+      - name: Setup Environment and Secrets File
         run: |
-          mkdir -p "$ANDROID_HOME/licenses" || true
-          echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license" || true
-          echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> "$ANDROID_HOME/licenses/android-sdk-license" || true
-          echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-preview-license" || true
-          echo "84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license" || true
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          if [ ! -f ".env" ] && [ -f ".env.example" ]; then
+            cp .env.example .env
+          elif [ ! -f ".env" ]; then
+            touch .env
+          fi
 
-      - name: Restore Keystore if needed
+      - name: Restore Keystore if Available
         run: |
           if [ ! -f "debug.keystore" ] && [ -f "debug.keystore.base64" ]; then
             base64 -d debug.keystore.base64 > debug.keystore || true
           fi
+
+      - name: Accept Android SDK Licenses
+        run: |
+          export ANDROID_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          mkdir -p "$ANDROID_HOME/licenses" || true
+          echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license" || true
+          echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> "$ANDROID_HOME/licenses/android-sdk-license" || true
+          echo "84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license" || true
+          yes | sdkmanager --licenses || true
 
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew || true
@@ -53,9 +55,9 @@ jobs:
 
       - name: Build Android APK with Gradle
         run: |
-          ./gradlew assembleDebug --stacktrace
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
-      - name: Prepare APK Artifacts
+      - name: Collect Generated APK Files
         run: |
           mkdir -p build_output
           find app/build/outputs/apk/ -name "*.apk" -exec cp {} build_output/Salam_SIP_Caller_debug.apk \; || true
