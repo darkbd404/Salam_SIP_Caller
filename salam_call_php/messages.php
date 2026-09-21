@@ -33,7 +33,6 @@ foreach ($allMessages as $msg) {
     }
 }
 
-// Sort conversations by most recent
 usort($conversations, function($a, $b) {
     return ($b['timestamp'] ?? 0) - ($a['timestamp'] ?? 0);
 });
@@ -47,36 +46,44 @@ include __DIR__ . '/includes/header.php';
       <div class="card-title" style="margin-bottom: 0;"><i class="fas fa-comment-dots"></i> সালাম আইপি মেসেঞ্জার</div>
       <div style="font-size: 11px; color: var(--text-muted);">বার্তা খরচ: ৳ ০.১০ / এসএমএস</div>
     </div>
-    <a href="contacts.php" class="btn btn-outline" style="width: auto; padding: 6px 12px; font-size: 11px;">
-      <i class="fas fa-plus"></i> নতুন মেসেজ
+    <a href="chat.php" class="btn btn-outline" style="width: auto; padding: 6px 12px; font-size: 11px;">
+      <i class="fas fa-pen-to-square"></i> নতুন মেসেজ
     </a>
   </div>
 
+  <!-- Quick Start Chat Box -->
+  <form action="chat.php" method="GET" style="display: flex; gap: 8px; margin-bottom: 16px;">
+    <input type="text" name="peer" class="form-control" placeholder="যেকোনো 09612 আইপি বা মোবাইল লিখে চ্যাট..." style="font-size: 13px; padding: 8px 12px;" required>
+    <button type="submit" class="btn btn-primary" style="width: auto; padding: 8px 16px; font-size: 12px; white-space: nowrap;">
+      <i class="fas fa-paper-plane"></i> পাঠান
+    </button>
+  </form>
+
   <?php if (empty($conversations)): ?>
-    <div style="text-align: center; padding: 40px 10px; color: var(--text-muted);">
-      <i class="fas fa-comments" style="font-size: 40px; margin-bottom: 12px; opacity: 0.4;"></i>
+    <div style="text-align: center; padding: 30px 10px; color: var(--text-muted);">
+      <i class="fas fa-comments" style="font-size: 36px; margin-bottom: 12px; opacity: 0.4;"></i>
       <p style="font-size: 14px;">এখনও কোনো বার্তা আদান-প্রদান হয়নি।</p>
-      <p style="font-size: 12px;">কন্টাক্টস থেকে যেকোনো ০9612 আইপি নাম্বারে সরাসরি মেসেজ পাঠান।</p>
-      <a href="contacts.php" class="btn btn-primary" style="margin-top: 15px; width: auto; display: inline-block;">
+      <p style="font-size: 12px; margin-top: 4px;">উপরে নম্বর লিখে অথবা কন্টাক্টস থেকে যেকোনো গ্রাহককে মেসেজ পাঠান।</p>
+      <a href="contacts.php" class="btn btn-primary" style="margin-top: 14px; width: auto; display: inline-block;">
         <i class="fas fa-address-book"></i> কন্টাক্টস লিস্ট দেখুন
       </a>
     </div>
   <?php else: ?>
-    <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
       <?php foreach ($conversations as $c): ?>
         <a href="chat.php?peer=<?php echo urlencode($c['peerIp']); ?>" style="text-decoration: none; color: inherit;">
-          <div class="contact-card" style="align-items: center;">
-            <div class="contact-avatar" style="overflow: hidden; width: 44px; height: 44px;">
+          <div class="contact-item-card" style="align-items: center;">
+            <div class="contact-thumb-avatar">
               <?php if (!empty($c['peerPhoto']) && file_exists(__DIR__ . '/' . $c['peerPhoto'])): ?>
-                <img src="<?php echo htmlspecialchars($c['peerPhoto']); ?>" style="width: 100%; height: 100%; object-fit: cover;" alt="Avatar">
+                <img src="<?php echo htmlspecialchars($c['peerPhoto']); ?>" alt="Avatar">
               <?php else: ?>
-                <i class="fas fa-user"></i>
+                <?php echo mb_substr($c['peerName'], 0, 1, 'UTF-8'); ?>
               <?php endif; ?>
             </div>
             
             <div style="flex: 1; min-width: 0;">
               <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                <div style="font-size: 14px; font-weight: 700;"><?php echo htmlspecialchars($c['peerName']); ?></div>
+                <div style="font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo htmlspecialchars($c['peerName']); ?></div>
                 <div style="font-size: 10px; color: var(--text-muted);"><?php echo date('h:i A', $c['timestamp']); ?></div>
               </div>
               <div style="font-size: 11px; color: var(--primary-light); font-weight: 600;"><?php echo htmlspecialchars($c['peerIp']); ?></div>
@@ -85,7 +92,7 @@ include __DIR__ . '/includes/header.php';
               </div>
             </div>
 
-            <i class="fas fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+            <i class="fas fa-chevron-right" style="color: var(--text-muted); font-size: 12px; margin-left: 8px;"></i>
           </div>
         </a>
       <?php endforeach; ?>

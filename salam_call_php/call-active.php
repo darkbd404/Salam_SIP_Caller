@@ -51,7 +51,7 @@ if ($peerName === $callee) {
       -webkit-tap-highlight-color: transparent;
     }
     body {
-      background: #030F0D;
+      background: #020C0A;
       font-family: 'Hind Siliguri', -apple-system, BlinkMacSystemFont, sans-serif;
       color: #fff;
       min-height: 100vh;
@@ -64,17 +64,16 @@ if ($peerName === $callee) {
       width: 100%;
       max-width: 480px;
       min-height: 100vh;
-      background: radial-gradient(circle at 50% 30%, #004D40 0%, #02120F 70%, #010807 100%);
+      background: radial-gradient(circle at 50% 25%, #004D40 0%, #031713 65%, #010A08 100%);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      padding: 36px 24px 44px;
+      padding: 36px 20px 42px;
       position: relative;
-      box-shadow: 0 0 40px rgba(0,0,0,0.9);
     }
     
-    /* Video Area */
+    /* Video Layer */
     .video-layer {
       position: absolute;
       inset: 0;
@@ -92,8 +91,8 @@ if ($peerName === $callee) {
       position: absolute;
       top: 24px;
       right: 20px;
-      width: 105px;
-      height: 145px;
+      width: 100px;
+      height: 140px;
       border-radius: 16px;
       object-fit: cover;
       border: 2px solid #00E676;
@@ -109,13 +108,12 @@ if ($peerName === $callee) {
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      min-height: calc(100vh - 80px);
+      min-height: calc(100vh - 78px);
     }
 
-    /* Top Section */
     .call-badge {
-      background: rgba(0, 230, 118, 0.15);
-      border: 1px solid rgba(0, 230, 118, 0.4);
+      background: rgba(0, 230, 118, 0.16);
+      border: 1px solid rgba(0, 230, 118, 0.45);
       color: #00E676;
       padding: 6px 14px;
       border-radius: 20px;
@@ -129,9 +127,7 @@ if ($peerName === $callee) {
     .caller-title {
       font-size: 26px;
       font-weight: 700;
-      letter-spacing: 0.3px;
-      margin-bottom: 4px;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      margin-bottom: 3px;
     }
     .caller-subtitle {
       font-size: 14px;
@@ -150,42 +146,37 @@ if ($peerName === $callee) {
       gap: 6px;
     }
 
-    /* Center Avatar with Glowing Audio Rings */
+    /* Avatar & Sound Rings */
     .avatar-wrapper {
       position: relative;
-      width: 150px;
-      height: 150px;
+      width: 140px;
+      height: 140px;
       margin: 15px auto;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .ring-pulse-1, .ring-pulse-2 {
+    .ring-pulse {
       position: absolute;
       inset: -15px;
       border-radius: 50%;
-      background: rgba(0, 230, 118, 0.15);
-      animation: pulseRing 2.2s infinite ease-out;
+      background: rgba(0, 230, 118, 0.18);
+      animation: pulseRing 2s infinite ease-out;
       pointer-events: none;
     }
-    .ring-pulse-2 {
-      inset: -30px;
-      animation-delay: 0.7s;
-      background: rgba(0, 137, 123, 0.12);
-    }
     .avatar-circle {
-      width: 140px;
-      height: 140px;
+      width: 130px;
+      height: 130px;
       border-radius: 50%;
       background: linear-gradient(135deg, #00897B, #004D40);
-      border: 3px solid rgba(0, 230, 118, 0.8);
+      border: 3px solid #00E676;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 54px;
+      font-size: 50px;
       color: #fff;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 230, 118, 0.35);
+      box-shadow: 0 10px 30px rgba(0, 230, 118, 0.4);
       z-index: 2;
     }
     .avatar-circle img {
@@ -194,9 +185,8 @@ if ($peerName === $callee) {
       object-fit: cover;
     }
 
-    /* Call Duration & Audio Visualizer */
     .timer-badge {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 700;
       color: #fff;
       letter-spacing: 2px;
@@ -206,15 +196,15 @@ if ($peerName === $callee) {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      height: 24px;
+      gap: 5px;
+      height: 22px;
       margin-top: 6px;
     }
     .wave-bar {
-      width: 3px;
+      width: 4px;
       height: 8px;
       background: #00E676;
-      border-radius: 2px;
+      border-radius: 3px;
       animation: soundWave 1.2s infinite ease-in-out alternate;
     }
     .wave-bar:nth-child(2) { animation-delay: 0.2s; height: 16px; }
@@ -222,20 +212,20 @@ if ($peerName === $callee) {
     .wave-bar:nth-child(4) { animation-delay: 0.1s; height: 12px; }
     .wave-bar:nth-child(5) { animation-delay: 0.3s; height: 18px; }
 
-    /* Modern Glassmorphic Action Control Grid */
+    /* Controls Panel */
     .controls-panel {
       width: 100%;
-      max-width: 350px;
-      background: rgba(11, 28, 25, 0.65);
+      max-width: 340px;
+      background: rgba(11, 28, 25, 0.7);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(77, 182, 172, 0.25);
       border-radius: 24px;
-      padding: 16px 14px;
+      padding: 16px 12px;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.4);
     }
     .ctrl-item {
@@ -250,8 +240,8 @@ if ($peerName === $callee) {
       outline: none;
     }
     .ctrl-icon-btn {
-      width: 52px;
-      height: 52px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.18);
@@ -265,8 +255,8 @@ if ($peerName === $callee) {
     .ctrl-item.active .ctrl-icon-btn {
       background: #00E676;
       color: #00291B;
-      box-shadow: 0 0 16px rgba(0, 230, 118, 0.6);
       border-color: #00E676;
+      box-shadow: 0 0 16px rgba(0, 230, 118, 0.6);
     }
     .ctrl-item.recording .ctrl-icon-btn {
       background: #FF5252;
@@ -280,21 +270,19 @@ if ($peerName === $callee) {
       color: #B2DFDB;
     }
 
-    /* End Call Action */
     .end-call-btn {
-      width: 74px;
-      height: 74px;
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
       background: linear-gradient(135deg, #FF5252, #D50000);
       border: none;
       color: #fff;
-      font-size: 30px;
+      font-size: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       box-shadow: 0 8px 28px rgba(255, 82, 82, 0.55);
-      transition: transform 0.15s ease;
       margin: 0 auto;
     }
     .end-call-btn:active {
@@ -314,12 +302,12 @@ if ($peerName === $callee) {
 </head>
 <body>
 
-<!-- Hidden Audio for Remote Stream Audio Output -->
+<!-- Hidden Audio Element for Two-Way Remote Audio Playback -->
 <audio id="remoteAudio" autoplay playsinline></audio>
 
-<div class="call-container">
+<div class="call-container" onclick="unlockAudioPlayback()">
 
-  <!-- Video Layers (if video call) -->
+  <!-- Video Area -->
   <div class="video-layer" id="videoLayer">
     <video id="remoteVideo" class="remote-video" autoplay playsinline></video>
     <video id="localVideo" class="local-video" autoplay playsinline muted></video>
@@ -327,7 +315,7 @@ if ($peerName === $callee) {
 
   <div class="ui-overlay">
     
-    <!-- Top Contact Details -->
+    <!-- Top Details -->
     <div style="text-align: center;">
       <div class="call-badge">
         <i class="fas <?php echo $callType === 'VIDEO' ? 'fa-video' : 'fa-phone-volume'; ?>"></i>
@@ -340,12 +328,11 @@ if ($peerName === $callee) {
       </div>
     </div>
 
-    <!-- Center Avatar / Visualizer -->
+    <!-- Center Visualizer -->
     <?php if ($callType !== 'VIDEO'): ?>
     <div style="text-align: center;">
       <div class="avatar-wrapper">
-        <div class="ring-pulse-1"></div>
-        <div class="ring-pulse-2"></div>
+        <div class="ring-pulse"></div>
         <div class="avatar-circle">
           <?php if (!empty($peerPhoto) && file_exists(__DIR__ . '/' . $peerPhoto)): ?>
             <img src="<?php echo htmlspecialchars($peerPhoto); ?>" alt="Avatar">
@@ -372,7 +359,7 @@ if ($peerName === $callee) {
     </div>
     <?php endif; ?>
 
-    <!-- Bottom Controls -->
+    <!-- Controls -->
     <div style="width: 100%;">
       <div class="controls-panel">
         
@@ -401,7 +388,7 @@ if ($peerName === $callee) {
         </button>
 
         <!-- Message -->
-        <button class="ctrl-item" onclick="window.open('chat.php?recipient=<?php echo urlencode($callee); ?>', '_blank')">
+        <button class="ctrl-item" onclick="window.open('chat.php?peer=<?php echo urlencode($callee); ?>', '_blank')">
           <div class="ctrl-icon-btn">
             <i class="fas fa-comment-dots"></i>
           </div>
@@ -439,8 +426,9 @@ let isSpeakerOn = false;
 let mediaRecorder = null;
 let recordedAudioChunks = [];
 let isRecording = false;
+let activeSessionId = sessionId;
 
-// WebRTC STUN Configuration
+// WebRTC Configuration
 const rtcConfig = {
   iceServers: [
     { urls: 'stun:stun.l.google.com:19302' },
@@ -449,7 +437,7 @@ const rtcConfig = {
   ]
 };
 
-// Outgoing Ringtone Audio Context
+// Outgoing Ringtone
 let audioCtx = null;
 let ringOsc1 = null, ringOsc2 = null;
 
@@ -483,10 +471,16 @@ function stopOutgoingRingTone() {
   }
 }
 
-// Initialize WebRTC & Media
+function unlockAudioPlayback() {
+  const remoteAudio = document.getElementById('remoteAudio');
+  if (remoteAudio && remoteAudio.paused && remoteAudio.srcObject) {
+    remoteAudio.play().catch(()=>{});
+  }
+}
+
+// Initialize WebRTC
 async function initWebRTCCall() {
   try {
-    // 1. Get User Media (Microphone & Optional Video)
     const constraints = {
       audio: {
         echoCancellation: true,
@@ -503,21 +497,17 @@ async function initWebRTCCall() {
       if (localVid) localVid.srcObject = localStream;
     }
 
-    // 2. Setup RTCPeerConnection
     peerConnection = new RTCPeerConnection(rtcConfig);
 
-    // Add local tracks to peer connection
     localStream.getTracks().forEach(track => {
       peerConnection.addTrack(track, localStream);
     });
 
-    // Handle remote track (Sound hearing)
     peerConnection.ontrack = (event) => {
-      console.log('Received remote media stream track:', event.track.kind);
       const remoteAudio = document.getElementById('remoteAudio');
       if (remoteAudio && event.streams[0]) {
         remoteAudio.srcObject = event.streams[0];
-        remoteAudio.play().catch(err => console.log('Audio autoplay retry:', err));
+        remoteAudio.play().catch(err => console.log('Autoplay retry:', err));
       }
       if (callType === 'VIDEO') {
         const remoteVid = document.getElementById('remoteVideo');
@@ -527,7 +517,6 @@ async function initWebRTCCall() {
       }
     };
 
-    // Handle ICE Candidates
     peerConnection.onicecandidate = (event) => {
       if (event.candidate && activeSessionId) {
         fetch('api/signal.php', {
@@ -545,9 +534,7 @@ async function initWebRTCCall() {
 
     playOutgoingRingTone();
 
-    // 3. Initiate or Join Signaling Session
     if (!isIncoming) {
-      // Caller: Create Offer
       const offer = await peerConnection.createOffer();
       await peerConnection.setLocalDescription(offer);
 
@@ -569,19 +556,16 @@ async function initWebRTCCall() {
       activeSessionId = data.sessionId;
     } else {
       activeSessionId = sessionId;
-      // Callee: Fetch offer & Create answer
       setupCalleeAnswer();
     }
 
     startSignalPolling();
 
   } catch (err) {
-    console.error('Media init error:', err);
-    document.getElementById('callStateText').innerText = 'মাইক্রোফোন পারমিশন প্রয়োজন!';
+    console.error('Media error:', err);
+    document.getElementById('callStateText').innerText = 'মাইক্রোফোন পারমিশন অন করুন!';
   }
 }
-
-let activeSessionId = sessionId;
 
 async function setupCalleeAnswer() {
   try {
@@ -618,13 +602,12 @@ function startSignalPolling() {
 
       if (!data.success || data.status === 'ENDED' || (data.signal && data.signal.status === 'ENDED')) {
         clearInterval(pollSignalInterval);
-        handleCallTerminated('কল শেষ হয়েছে (Call Ended)');
+        handleCallTerminated('কল শেষ হয়েছে');
       } else if (data.signal && data.signal.status === 'REJECTED') {
         clearInterval(pollSignalInterval);
-        handleCallTerminated('✕ কলটি প্রত্যাখ্যান করা হয়েছে (Declined)');
+        handleCallTerminated('✕ কলটি প্রত্যাখ্যান করা হয়েছে');
       } else if (data.signal && data.signal.status === 'CONNECTED') {
         if (!isCallConnected) {
-          // If Caller and got SDP Answer from Callee
           if (!isIncoming && data.signal.sdpAnswer && peerConnection && !peerConnection.currentRemoteDescription) {
             await peerConnection.setRemoteDescription(new RTCSessionDescription(data.signal.sdpAnswer));
           }
@@ -651,6 +634,7 @@ function onCallConnectedSuccess() {
   if (isCallConnected) return;
   isCallConnected = true;
   stopOutgoingRingTone();
+  unlockAudioPlayback();
 
   document.getElementById('callStateText').innerHTML = '<i class="fas fa-circle-check" style="color: #00E676;"></i> ✓ সংযোগ হয়েছে <span style="color:#00E676; font-weight:700;">(HD Voice)</span>';
   
@@ -663,11 +647,10 @@ function onCallConnectedSuccess() {
     const s = String(callDurationSec % 60).padStart(2, '0');
     document.getElementById('callTimerDisplay').innerText = `${m}:${s}`;
 
-    // Deduct balance every 60 seconds
     if (callDurationSec % 60 === 0) {
       userBalance -= 0.30;
       if (userBalance < 0.30) {
-        alert('আপনার একাউন্ট ব্যালেন্স শেষ হয়ে গেছে। অনুগ্রহ করে রিচার্জ করুন।');
+        alert('আপনার ব্যালেন্স শেষ হয়ে গেছে!');
         endCallAndExit();
       }
     }
@@ -699,7 +682,6 @@ function toggleSpeaker() {
   document.getElementById('btnSpeaker').classList.toggle('active', isSpeakerOn);
   const audio = document.getElementById('remoteAudio');
   if (audio && typeof audio.setSinkId === 'function') {
-    // Speaker toggle supported on modern browsers
     try {
       audio.setSinkId(isSpeakerOn ? 'speaker' : 'default');
     } catch(e){}
@@ -716,7 +698,7 @@ function toggleRecording() {
 
 function startCallRecording() {
   if (!localStream) {
-    alert('রেকর্ড করার জন্য অডিও স্ট্রিম নেই!');
+    alert('অডিও স্ট্রিম পাওয়া যায়নি');
     return;
   }
   recordedAudioChunks = [];

@@ -1,6 +1,6 @@
 <?php
 /**
- * Salam SIP Caller - Real-time Call Signaling, WebRTC Exchange & Billing Engine
+ * Salam SIP Caller - High Reliability Signaling & WebRTC Relay Engine
  */
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../includes/config.php';
@@ -11,17 +11,18 @@ $action = clean_input($_GET['action'] ?? ($_POST['action'] ?? ''));
 $signals = read_json_data(SIGNALS_JSON_FILE);
 $users = read_json_data(USER_JSON_FILE);
 
-// Clean up stale signals older than 5 minutes
 $currentTime = time();
 $activeSignals = [];
 foreach ($signals as $s) {
-    if (($currentTime - ($s['timestamp'] ?? 0)) < 300 && ($s['status'] ?? '') !== 'ENDED') {
+    // Keep signals alive for only 2 minutes or until ENDED/REJECTED
+    $age = $currentTime - ($s['timestamp'] ?? 0);
+    if ($age < 120 && !in_array($s['status'] ?? '', ['ENDED', 'REJECTED_HANDLED'])) {
         $activeSignals[] = $s;
     }
 }
 $signals = $activeSignals;
 
-// 1. Check Incoming Calls & Unread Messages for Logged-in User (Background Active 24/7)
+// 1. Check Incoming Calls & Unread Messages
 if ($action === 'CHECK_INCOMING') {
     $myIp = clean_input($_GET['my_ip'] ?? '');
     if (empty($myIp)) {
@@ -37,16 +38,19 @@ if ($action === 'CHECK_INCOMING') {
     $incomingCall = null;
     foreach ($signals as $s) {
         if (($s['calleeIp'] ?? '') === $myIp && ($s['status'] ?? '') === 'RINGING') {
-            $incomingCall = $s;
-            break;
+            // Must be less than 45 seconds old to prevent zombie rings
+            if (($currentTime - ($s['timestamp'] ?? 0)) < 45) {
+                $incomingCall = $s;
+                break;
+            }
         }
     }
 
-    // Also check unread messages for notifications
+    // Unread messages
     $messages = read_json_data(MESSAGES_JSON_FILE);
     $unreadMessages = [];
     foreach ($messages as $m) {
-        if (($m['recipientIp'] ?? '') === $myIp && empty($m['isRead'])) {
+        if (($m['to'] ?? '') === $myIp && empty($m['isRead'])) {
             $unreadMessages[] = $m;
         }
     }
@@ -66,17 +70,16 @@ if ($action === 'CHECK_INCOMING') {
     exit;
 }
 
-// 2. Initiate a Call (Caller)
+// 2. Initiate Call
 if ($action === 'INITIATE_CALL') {
     $callerUser = require_auth();
     $rawInput = file_get_contents('php://input');
     $data = json_decode($rawInput, true) ?: $_POST;
 
     $calleeNumber = clean_input($data['calleeNumber'] ?? '');
-    $callType = clean_input($data['callType'] ?? 'AUDIO'); // AUDIO or VIDEO
+    $callType = clean_input($data['callType'] ?? 'AUDIO');
     $sdpOffer = $data['sdpOffer'] ?? null;
 
-    // Check caller balance
     if (($callerUser['balance'] ?? 0) < CALL_RATE_PER_MIN) {
         echo json_encode([
             'success' => false,
@@ -91,11 +94,6 @@ if ($action === 'INITIATE_CALL') {
         exit;
     }
 
-    if (empty($callerUser['isCallAllowedByAdmin'])) {
-        echo json_encode(['success' => false, 'message' => 'অ্যাডমিন থেকে কল সুবিধা অনুমোদন প্রয়োজন।']);
-        exit;
-    }
-
     // Find Callee
     $calleeUser = null;
     foreach ($users as $u) {
@@ -104,6 +102,15 @@ if ($action === 'INITIATE_CALL') {
             break;
         }
     }
+
+    // Clean any prior pending signal for this pair
+    $cleanedSignals = [];
+    foreach ($signals as $s) {
+        if (!(($s['callerIp'] ?? '') === $callerUser['ipNumber'] && ($s['calleeIp'] ?? '') === $calleeNumber)) {
+            $cleanedSignals[] = $s;
+        }
+    }
+    $signals = $cleanedSignals;
 
     $sessionId = 'call_' . time() . '_' . rand(1000, 9999);
     $newSignal = [
@@ -138,7 +145,7 @@ if ($action === 'INITIATE_CALL') {
     exit;
 }
 
-// 3. Poll Call Status & WebRTC Signals (Both Caller & Callee)
+// 3. Poll Call Status & Signals
 if ($action === 'POLL_CALL') {
     $sessionId = clean_input($_GET['session_id'] ?? '');
     foreach ($signals as $s) {
@@ -154,9 +161,8 @@ if ($action === 'POLL_CALL') {
     exit;
 }
 
-// 4. Accept Call & Send SDP Answer (Callee)
+// 4. Accept Call (Callee)
 if ($action === 'ACCEPT_CALL') {
-    $user = require_auth();
     $rawInput = file_get_contents('php://input');
     $data = json_decode($rawInput, true) ?: $_POST;
     $sessionId = clean_input($data['sessionId'] ?? '');
@@ -185,12 +191,12 @@ if ($action === 'ACCEPT_CALL') {
     exit;
 }
 
-// 5. Send WebRTC Offer / Answer / ICE Candidate
+// 5. Send WebRTC Signals
 if ($action === 'SEND_WEBRTC') {
     $rawInput = file_get_contents('php://input');
     $data = json_decode($rawInput, true) ?: $_POST;
     $sessionId = clean_input($data['sessionId'] ?? '');
-    $type = clean_input($data['type'] ?? ''); // 'offer', 'answer', 'caller_candidate', 'callee_candidate'
+    $type = clean_input($data['type'] ?? '');
     $payload = $data['payload'] ?? null;
 
     $found = false;
@@ -202,14 +208,10 @@ if ($action === 'SEND_WEBRTC') {
                 $s['sdpAnswer'] = $payload;
                 $s['status'] = 'CONNECTED';
             } elseif ($type === 'caller_candidate' && $payload) {
-                if (!isset($s['callerCandidates']) || !is_array($s['callerCandidates'])) {
-                    $s['callerCandidates'] = [];
-                }
+                if (!isset($s['callerCandidates']) || !is_array($s['callerCandidates'])) $s['callerCandidates'] = [];
                 $s['callerCandidates'][] = $payload;
             } elseif ($type === 'callee_candidate' && $payload) {
-                if (!isset($s['calleeCandidates']) || !is_array($s['calleeCandidates'])) {
-                    $s['calleeCandidates'] = [];
-                }
+                if (!isset($s['calleeCandidates']) || !is_array($s['calleeCandidates'])) $s['calleeCandidates'] = [];
                 $s['calleeCandidates'][] = $payload;
             }
             $found = true;
@@ -226,7 +228,7 @@ if ($action === 'SEND_WEBRTC') {
     exit;
 }
 
-// 6. Reject Call (Callee)
+// 6. Reject Call
 if ($action === 'REJECT_CALL') {
     $rawInput = file_get_contents('php://input');
     $data = json_decode($rawInput, true) ?: $_POST;
@@ -249,7 +251,7 @@ if ($action === 'REJECT_CALL') {
     }
     write_json_data(SIGNALS_JSON_FILE, $signals);
 
-    // Record rejected/declined call in history
+    // Save Rejected status in History
     if (!empty($callerIp)) {
         $calls = read_json_data(CALLS_JSON_FILE);
         $calls[] = [
@@ -273,13 +275,12 @@ if ($action === 'REJECT_CALL') {
     exit;
 }
 
-// 7. End Call & Deduct Balance (Caller or Callee)
+// 7. End Call
 if ($action === 'END_CALL') {
     $rawInput = file_get_contents('php://input');
     $data = json_decode($rawInput, true) ?: $_POST;
     $sessionId = clean_input($data['sessionId'] ?? '');
     $duration = (int)($data['duration'] ?? 0);
-    $callStatus = clean_input($data['status'] ?? 'COMPLETED'); // COMPLETED, MISSED, REJECTED
 
     $callerIp = '';
     $calleeIp = '';
@@ -298,12 +299,11 @@ if ($action === 'END_CALL') {
     }
     write_json_data(SIGNALS_JSON_FILE, $signals);
 
-    // Calculate Billing: 30 Poisha (0.30 Tk) per minute
+    // Billing Calculation
     if ($duration > 0 && !empty($callerIp)) {
         $minutes = max(1, ceil($duration / 60));
         $cost = round($minutes * CALL_RATE_PER_MIN, 2);
 
-        // Deduct from caller
         $users = read_json_data(USER_JSON_FILE);
         foreach ($users as &$u) {
             if (($u['ipNumber'] ?? '') === $callerIp) {
@@ -316,10 +316,9 @@ if ($action === 'END_CALL') {
         $cost = 0;
     }
 
-    // Save to Calls History
     if (!empty($callerIp)) {
         $calls = read_json_data(CALLS_JSON_FILE);
-        $finalStatus = ($duration > 0) ? 'OUTGOING' : (($callStatus === 'REJECTED') ? 'REJECTED' : 'MISSED');
+        $finalStatus = ($duration > 0) ? 'OUTGOING' : 'MISSED';
         
         $calls[] = [
             'id' => time() . '_' . rand(100, 999),

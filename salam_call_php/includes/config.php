@@ -171,14 +171,17 @@ function ensure_master_admin_exists() {
 }
 ensure_master_admin_exists();
 
-// Check if a user is the authorized Master Admin
+// Check if a user is the authorized Master Admin (Strictly only Abdus Salam / 01620230864 / salam230864@gmail.com)
 function is_admin_user($user) {
-    if (!$user) return false;
+    if (!$user || !is_array($user)) return false;
+    $email = strtolower(trim($user['email'] ?? ''));
+    $mobile = trim($user['mobileNumber'] ?? '');
+    $ip = trim($user['ipNumber'] ?? '');
+
     return (
-        ($user['email'] ?? '') === MASTER_ADMIN_EMAIL || 
-        ($user['mobileNumber'] ?? '') === MASTER_ADMIN_MOBILE || 
-        ($user['ipNumber'] ?? '') === MASTER_ADMIN_IP || 
-        ($user['role'] ?? '') === 'ADMIN'
+        $email === strtolower(MASTER_ADMIN_EMAIL) || 
+        $mobile === MASTER_ADMIN_MOBILE || 
+        $ip === MASTER_ADMIN_IP
     );
 }
 
