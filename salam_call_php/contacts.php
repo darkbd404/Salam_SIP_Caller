@@ -60,10 +60,10 @@ include __DIR__ . '/includes/header.php';
 
   <!-- Tabs -->
   <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--card-border); padding-bottom: 10px;">
-    <button id="tabIpBtn" class="btn" style="flex: 1; padding: 8px; font-size: 13px; background: var(--primary); color: #fff; font-weight: 700;" onclick="switchTab('ip')">
+    <button id="tabIpBtn" class="btn" style="flex: 1; padding: 10px; font-size: 13px; background: var(--primary); color: #fff; font-weight: 700;" onclick="switchTab('ip')">
       <i class="fas fa-satellite-dish"></i> সালাম আইপি ইউজার
     </button>
-    <button id="tabPhoneBtn" class="btn" style="flex: 1; padding: 8px; font-size: 13px; background: rgba(255,255,255,0.08); color: var(--text-muted);" onclick="switchTab('phone')">
+    <button id="tabPhoneBtn" class="btn" style="flex: 1; padding: 10px; font-size: 13px; background: rgba(125,125,125,0.15); color: var(--text-muted);" onclick="switchTab('phone')">
       <i class="fas fa-mobile-screen"></i> ফোনবুক কন্টাক্ট
     </button>
   </div>
@@ -71,44 +71,45 @@ include __DIR__ . '/includes/header.php';
   <!-- Tab 1: Registered Salam IP Users -->
   <div id="tabIpContent">
     <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
-      সিস্টেমে নিবন্ধিত সকল ০9612 আইপি ব্যবহারকারী (সরাসরি আনলিমিটেড এইচডি কল ও বার্তা):
+      সিস্টেমে নিবন্ধিত সকল ০9612 আইপি গ্রাহক (সরাসরি আনলিমিটেড এইচডি কল ও বার্তা):
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
       <?php foreach ($allUsers as $u): ?>
         <?php if ($u['id'] == $user['id']) continue; ?>
-        <div class="contact-card">
-          <div class="contact-avatar" style="overflow: hidden;">
-            <?php if (!empty($u['profilePhoto']) && file_exists(__DIR__ . '/' . $u['profilePhoto'])): ?>
-              <img src="<?php echo htmlspecialchars($u['profilePhoto']); ?>" style="width: 100%; height: 100%; object-fit: cover;" alt="Avatar">
-            <?php else: ?>
-              <i class="fas fa-user"></i>
-            <?php endif; ?>
-          </div>
-          
-          <div class="contact-info">
-            <div class="contact-name">
-              <?php echo htmlspecialchars($u['name']); ?>
-              <span style="font-size: 10px; background: rgba(0,230,118,0.2); color: #00E676; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">VERIFIED</span>
+        <div class="contact-item-card">
+          <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
+            <!-- Profile Thumbnail Avatar -->
+            <div class="contact-thumb-avatar">
+              <?php if (!empty($u['profilePhoto']) && file_exists(__DIR__ . '/' . $u['profilePhoto'])): ?>
+                <img src="<?php echo htmlspecialchars($u['profilePhoto']); ?>" alt="Avatar">
+              <?php else: ?>
+                <?php echo mb_substr($u['name'] ?? 'U', 0, 1, 'UTF-8'); ?>
+              <?php endif; ?>
+              <span class="online-dot" title="Active"></span>
             </div>
-            <div class="contact-num">
-              <i class="fas fa-signal" style="font-size: 10px;"></i> আইপি: <?php echo htmlspecialchars($u['ipNumber']); ?>
+            
+            <div style="min-width: 0;">
+              <div style="font-size: 14px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                <?php echo htmlspecialchars($u['name']); ?>
+                <span style="font-size: 9px; background: rgba(0,230,118,0.2); color: #00E676; padding: 2px 6px; border-radius: 4px; font-weight: 700;">VERIFIED</span>
+              </div>
+              <div style="font-size: 12px; color: var(--primary-light); font-weight: 600; letter-spacing: 0.5px;">
+                <i class="fas fa-signal" style="font-size: 10px;"></i> <?php echo htmlspecialchars($u['ipNumber']); ?>
+              </div>
             </div>
           </div>
 
           <!-- Actions -->
-          <div class="contact-actions">
-            <!-- Audio Call -->
-            <a href="call-active.php?callee=<?php echo urlencode($u['ipNumber']); ?>&type=AUDIO" class="btn-action btn-audio" title="অডিও কল">
+          <div style="display: flex; gap: 6px; flex-shrink: 0;">
+            <a href="chat.php?recipient=<?php echo urlencode($u['ipNumber']); ?>" class="btn" style="width: 36px; height: 36px; padding: 0; border-radius: 50%; background: rgba(0, 176, 255, 0.18); color: #00B0FF;" title="মেসেজ পাঠান">
+              <i class="fas fa-comment"></i>
+            </a>
+            <a href="call-active.php?callee=<?php echo urlencode($u['ipNumber']); ?>&type=AUDIO" class="btn" style="width: 36px; height: 36px; padding: 0; border-radius: 50%; background: #00E676; color: #00291B;" title="কল দিন">
               <i class="fas fa-phone"></i>
             </a>
-            <!-- Video Call -->
-            <a href="call-active.php?callee=<?php echo urlencode($u['ipNumber']); ?>&type=VIDEO" class="btn-action btn-video" title="ভিডিও কল">
+            <a href="call-active.php?callee=<?php echo urlencode($u['ipNumber']); ?>&type=VIDEO" class="btn" style="width: 36px; height: 36px; padding: 0; border-radius: 50%; background: rgba(0, 230, 118, 0.2); color: #00E676;" title="ভিডিও কল">
               <i class="fas fa-video"></i>
-            </a>
-            <!-- Message -->
-            <a href="chat.php?peer=<?php echo urlencode($u['ipNumber']); ?>" class="btn-action" style="background: rgba(255, 179, 0, 0.2); color: #FFB300;" title="মেসেজ পাঠান">
-              <i class="fas fa-comment"></i>
             </a>
           </div>
         </div>
@@ -116,110 +117,95 @@ include __DIR__ . '/includes/header.php';
     </div>
   </div>
 
-  <!-- Tab 2: Phonebook / Device Contacts -->
+  <!-- Tab 2: Saved Phonebook Contacts -->
   <div id="tabPhoneContent" style="display: none;">
-    
-    <!-- Action Buttons -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
-      <button type="button" onclick="importFromDevice()" class="btn btn-outline" style="padding: 8px; font-size: 11px;">
-        <i class="fas fa-download"></i> ফোন থেকে আনুন
-      </button>
-      <button type="button" onclick="document.getElementById('addContactForm').style.display='block'" class="btn btn-primary" style="padding: 8px; font-size: 11px;">
+    <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+      <button onclick="document.getElementById('addContactForm').style.display='block'" class="btn btn-primary" style="font-size: 12px; padding: 8px 12px;">
         <i class="fas fa-plus"></i> নতুন কন্টাক্ট
+      </button>
+      <button onclick="importDeviceContacts()" class="btn btn-outline" style="font-size: 12px; padding: 8px 12px;">
+        <i class="fas fa-file-import"></i> ফোনবুক ইম্পোর্ট
       </button>
     </div>
 
-    <!-- Add Contact Form Modal/Inline -->
-    <div id="addContactForm" style="display: none; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); padding: 12px; border-radius: 10px; margin-bottom: 14px;">
-      <div style="font-size: 13px; font-weight: 700; margin-bottom: 8px;">নতুন কন্টাক্ট সংরক্ষণ</div>
+    <!-- Add Contact Form -->
+    <div id="addContactForm" style="display: none; background: var(--input-bg); padding: 14px; border-radius: 12px; border: 1px solid var(--card-border); margin-bottom: 14px;">
       <form action="contacts.php" method="POST">
         <input type="hidden" name="action" value="add_contact">
         <div class="form-group">
-          <input type="text" name="name" class="form-control" placeholder="নাম" required>
+          <label class="form-label">নাম</label>
+          <input type="text" name="name" class="form-control" placeholder="যেমন: মো: সালাম" required>
         </div>
         <div class="form-group">
-          <input type="tel" name="number" class="form-control" placeholder="নম্বর (যেমন: 017XXXXXXXX)" required>
+          <label class="form-label">মোবাইল বা আইপি নম্বর</label>
+          <input type="text" name="number" class="form-control" placeholder="017... বা 09612..." required>
         </div>
         <div style="display: flex; gap: 8px;">
-          <button type="submit" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">সংরক্ষণ</button>
-          <button type="button" onclick="document.getElementById('addContactForm').style.display='none'" class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;">বাতিল</button>
+          <button type="submit" class="btn btn-primary" style="flex: 1;">সংরক্ষণ করুন</button>
+          <button type="button" onclick="document.getElementById('addContactForm').style.display='none'" class="btn btn-outline" style="width: auto;">বাতিল</button>
         </div>
       </form>
     </div>
 
-    <!-- Saved Device Contacts List -->
-    <div style="display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
       <?php if (empty($savedContacts)): ?>
-        <div style="text-align: center; padding: 25px; color: var(--text-muted); font-size: 13px;">
-          কোনো সংরক্ষিত ফোন কন্টাক্ট নেই। "ফোন থেকে আনুন" বাটনে ক্লিক করে ফোনের নম্বর আমদানি করুন।
-        </div>
+        <div style="text-align: center; padding: 25px; color: var(--text-muted);">কোনো কন্টাক্ট সংরক্ষিত নেই।</div>
       <?php else: ?>
-        <?php foreach ($savedContacts as $sc): ?>
-          <div class="contact-card">
-            <div class="contact-avatar" style="background: rgba(255,255,255,0.08);"><i class="fas fa-user"></i></div>
-            <div class="contact-info">
-              <div class="contact-name"><?php echo htmlspecialchars($sc['name']); ?></div>
-              <div class="contact-num"><?php echo htmlspecialchars($sc['number']); ?></div>
+        <?php foreach ($savedContacts as $c): ?>
+          <div class="contact-item-card">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div class="contact-thumb-avatar" style="background: linear-gradient(135deg, #FFB300, #F57F17);">
+                <?php echo mb_substr($c['name'] ?? 'C', 0, 1, 'UTF-8'); ?>
+              </div>
+              <div>
+                <div style="font-size: 14px; font-weight: 700;"><?php echo htmlspecialchars($c['name']); ?></div>
+                <div style="font-size: 12px; color: var(--text-muted);"><?php echo htmlspecialchars($c['number']); ?></div>
+              </div>
             </div>
-            <div class="contact-actions">
-              <a href="call-active.php?callee=<?php echo urlencode($sc['number']); ?>&type=AUDIO" class="btn-action btn-audio">
-                <i class="fas fa-phone"></i>
-              </a>
-              <a href="dialer.php?number=<?php echo urlencode($sc['number']); ?>" class="btn-action" style="background: rgba(77, 182, 172, 0.2); color: var(--primary-light);">
-                <i class="fas fa-th"></i>
-              </a>
-            </div>
+            <a href="call-active.php?callee=<?php echo urlencode($c['number']); ?>&type=AUDIO" class="btn" style="width: 36px; height: 36px; padding: 0; border-radius: 50%; background: #00E676; color: #00291B;">
+              <i class="fas fa-phone"></i>
+            </a>
           </div>
         <?php endforeach; ?>
       <?php endif; ?>
     </div>
-
   </div>
 
 </div>
 
 <script>
 function switchTab(tab) {
+  const ipTab = document.getElementById('tabIpContent');
+  const phoneTab = document.getElementById('tabPhoneContent');
   const ipBtn = document.getElementById('tabIpBtn');
   const phoneBtn = document.getElementById('tabPhoneBtn');
-  const ipContent = document.getElementById('tabIpContent');
-  const phoneContent = document.getElementById('tabPhoneContent');
 
   if (tab === 'ip') {
+    ipTab.style.display = 'block';
+    phoneTab.style.display = 'none';
     ipBtn.style.background = 'var(--primary)';
     ipBtn.style.color = '#fff';
-    ipBtn.style.fontWeight = '700';
-
-    phoneBtn.style.background = 'rgba(255,255,255,0.08)';
+    phoneBtn.style.background = 'rgba(125,125,125,0.15)';
     phoneBtn.style.color = 'var(--text-muted)';
-    phoneBtn.style.fontWeight = 'normal';
-
-    ipContent.style.display = 'block';
-    phoneContent.style.display = 'none';
   } else {
+    ipTab.style.display = 'none';
+    phoneTab.style.display = 'block';
     phoneBtn.style.background = 'var(--primary)';
     phoneBtn.style.color = '#fff';
-    phoneBtn.style.fontWeight = '700';
-
-    ipBtn.style.background = 'rgba(255,255,255,0.08)';
+    ipBtn.style.background = 'rgba(125,125,125,0.15)';
     ipBtn.style.color = 'var(--text-muted)';
-    ipBtn.style.fontWeight = 'normal';
-
-    phoneContent.style.display = 'block';
-    ipContent.style.display = 'none';
   }
 }
 
-// Device Contact Picker API
-async function importFromDevice() {
+async function importDeviceContacts() {
   if ('contacts' in navigator && 'ContactsManager' in window) {
     try {
       const props = ['name', 'tel'];
       const contacts = await navigator.contacts.select(props, { multiple: true });
       if (contacts && contacts.length > 0) {
         const payload = contacts.map(c => ({
-          name: (c.name && c.name[0]) ? c.name[0] : 'Contact',
-          number: (c.tel && c.tel[0]) ? c.tel[0].replace(/[^0-9+]/g, '') : ''
+          name: (c.name && c.name[0]) || 'Contact',
+          number: (c.tel && c.tel[0]) || ''
         })).filter(c => c.number.length > 0);
 
         await fetch('contacts.php', {
@@ -227,14 +213,13 @@ async function importFromDevice() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        location.reload();
+        window.location.reload();
       }
     } catch (err) {
-      console.warn('Device contacts picker canceled/failed:', err);
+      alert('ডিভাইস কন্টাক্ট এক্সেস ব্যর্থ হয়েছে');
     }
   } else {
-    document.getElementById('addContactForm').style.display = 'block';
-    alert('আপনার ডিভাইসে সরাসরি কন্টাক্ট সিলেক্ট বাটন উন্মুক্ত না হলে নিচের ফর্ম দিয়ে নাম ও নম্বর সংরক্ষণ করুন।');
+    alert('আপনার ব্রাউজার বা ডিভাইসে সরাসরি কন্টাক্ট পিকার এপিআই সমর্থিত নয়। অনুগ্রহ করে "নতুন কন্টাক্ট" বাটনে যোগ করুন।');
   }
 }
 </script>

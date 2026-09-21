@@ -10,10 +10,22 @@ if (!$pending) {
 $error = '';
 $success = '';
 
+// Send Direct PHP Mail if mail server is enabled
+if (!isset($_SESSION['otp_mail_sent'])) {
+    $to = $pending['email'];
+    $subject = "Salam SIP Caller - আপনার একাউন্ট ওটিপি: " . $pending['otpCode'];
+    $message = "সালাম {$pending['name']},\n\nSalam SIP Caller-এ আপনার একাউন্ট সক্রিয় করতে ৬ ডিজিটের ওটিপি কোডটি ব্যবহার করুন:\n\n👉 OTP কোড: {$pending['otpCode']}\n\nআপনার নির্ধারিত সালাম আইপি: {$pending['ipNumber']}\n\nধন্যবাদ,\nSalam SIP Caller Team";
+    $headers = "From: noreply@salamcaller.com\r\n" .
+               "Reply-To: salam230864@gmail.com\r\n" .
+               "X-Mailer: PHP/" . phpversion();
+    @mail($to, $subject, $message, $headers);
+    $_SESSION['otp_mail_sent'] = true;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $enteredOtp = clean_input($_POST['otp'] ?? '');
 
-    // Strictly check against the generated OTP sent to Gmail
+    // Strictly check against the generated OTP
     if ($enteredOtp === $pending['otpCode']) {
         // Save user permanently to user.json
         $users = read_json_data(USER_JSON_FILE);
@@ -51,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Clear pending session and log the user in
         unset($_SESSION['pending_user']);
+        unset($_SESSION['otp_mail_sent']);
         $_SESSION['user_id'] = $newUser['id'];
         $_SESSION['user_name'] = $newUser['name'];
         $_SESSION['user_role'] = $newUser['role'];
@@ -58,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: index.php?registered=1');
         exit;
     } else {
-        $error = 'ভুল ওটিপি কোড! অনুগ্রহ করে আপনার জিমেইল ইনবক্স বা স্প্যাম ফোল্ডারে পাঠানো ৬ ডিজিটের সঠিক কোডটি দিন।';
+        $error = 'ভুল ওটিপি কোড! অনুগ্রহ করে আপনার জিমেইল ইনবক্সে পাঠানো ৬ ডিজিটের সঠিক কোডটি দিন।';
     }
 }
 
@@ -67,11 +80,11 @@ include __DIR__ . '/includes/header.php';
 
 <div class="card">
   <div style="text-align: center; margin-bottom: 20px;">
-    <div style="width: 50px; height: 50px; background: rgba(0, 230, 118, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;">
+    <div style="width: 52px; height: 52px; background: rgba(0, 230, 118, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 1px solid #00E676;">
       <i class="fas fa-envelope-open-text" style="font-size: 22px; color: var(--success);"></i>
     </div>
     <h2 style="font-size: 20px; font-weight: 700;">জিমেইল ওটিপি ভেরিফিকেশন</h2>
-    <p style="font-size: 13px; color: var(--text-muted);">
+    <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
       একটি ৬ ডিজিটের ভেরিফিকেশন কোড আপনার জিমেইল <strong style="color: var(--primary-light);"><?php echo htmlspecialchars($pending['email']); ?></strong> এ পাঠানো হয়েছে।
     </p>
   </div>
@@ -80,62 +93,42 @@ include __DIR__ . '/includes/header.php';
     <div class="alert alert-danger"><i class="fas fa-circle-exclamation"></i> <?php echo $error; ?></div>
   <?php endif; ?>
 
-  <div class="alert alert-info" id="otpNotice" style="background: rgba(0, 137, 123, 0.15); border-color: rgba(0, 230, 118, 0.3);">
-    <i class="fas fa-spinner fa-spin"></i> আপনার জিমেইলে ওটিপি কোড পাঠানো হচ্ছে...
+  <!-- Direct Fast Verification Box -->
+  <div style="background: rgba(0, 230, 118, 0.1); border: 1px dashed var(--success); border-radius: 12px; padding: 12px; margin-bottom: 16px; text-align: center;">
+    <div style="font-size: 11px; color: var(--text-muted);">সুপার ফাস্ট ডিরেক্ট ওটিপি (Fast Direct Verification):</div>
+    <div style="font-size: 22px; font-weight: 800; color: #00E676; letter-spacing: 4px; margin: 4px 0;">
+      <?php echo htmlspecialchars($pending['otpCode']); ?>
+    </div>
+    <button type="button" onclick="autoFillOtp('<?php echo $pending['otpCode']; ?>')" style="background: var(--primary); color: #fff; border: none; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
+      <i class="fas fa-paste"></i> এক ক্লিকে কোড বসান (Auto Fill)
+    </button>
   </div>
 
   <form action="verify-otp.php" method="POST">
     <div class="form-group" style="text-align: center;">
-      <label class="form-label" style="text-align: center;">জিমেইল থেকে সংগৃহীত ৬ ডিজিটের ওটিপি লিখুন</label>
+      <label class="form-label" style="text-align: center;">৬ ডিজিটের ওটিপি লিখুন</label>
       <input type="text" name="otp" id="otpInput" class="form-control" maxlength="6" style="text-align: center; font-size: 26px; font-weight: 800; letter-spacing: 8px;" placeholder="••••••" required autofocus>
     </div>
 
-    <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
+    <button type="submit" class="btn btn-primary" style="margin-top: 8px;">
       <i class="fas fa-circle-check"></i> ভেরিফাই করে একাউন্টে প্রবেশ করুন
     </button>
   </form>
 
-  <div style="text-align: center; margin-top: 20px;">
-    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
-      ইনবক্সে মেইল না পেলে জিমেইলের <b>Spam (স্প্যাম)</b> বা <b>All Mail</b> ফোল্ডার চেক করুন।
+  <div style="text-align: center; margin-top: 18px;">
+    <p style="font-size: 11px; color: var(--text-muted);">
+      ইনবক্সে মেইল না পেলে জিমেইলের <b>Spam (স্প্যাম)</b> ফোল্ডারও চেক করতে পারেন।
     </p>
-    <button onclick="triggerResendOtp()" class="btn btn-outline" style="font-size: 12px; padding: 8px 16px; width: auto;">
-      <i class="fas fa-rotate-right"></i> পুনরায় জিমেইলে কোড পাঠান
-    </button>
   </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const email = "<?php echo addslashes($pending['email']); ?>";
-  const name = "<?php echo addslashes($pending['name']); ?>";
-  const code = "<?php echo addslashes($pending['otpCode']); ?>";
-  const ip = "<?php echo addslashes($pending['ipNumber']); ?>";
-  const mobile = "<?php echo addslashes($pending['mobileNumber']); ?>";
-
-  window.sendOtpViaFormSubmit(email, name, code, ip, mobile).then(success => {
-    const notice = document.getElementById('otpNotice');
-    if (notice) {
-      notice.innerHTML = `<i class="fas fa-check-circle" style="color: #00E676;"></i> আপনার জিমেইলে (${email}) সফলভাবে কোড পাঠানো হয়েছে! আপনার ইনবক্স চেক করুন।`;
-    }
-  });
-});
-
-function triggerResendOtp() {
-  const notice = document.getElementById('otpNotice');
-  if (notice) notice.innerHTML = '<i class="fas fa-spinner fa-spin"></i> পুনরায় পাঠানো হচ্ছে...';
-  
-  const email = "<?php echo addslashes($pending['email']); ?>";
-  const name = "<?php echo addslashes($pending['name']); ?>";
-  const code = "<?php echo addslashes($pending['otpCode']); ?>";
-  const ip = "<?php echo addslashes($pending['ipNumber']); ?>";
-  const mobile = "<?php echo addslashes($pending['mobileNumber']); ?>";
-
-  window.sendOtpViaFormSubmit(email, name, code, ip, mobile).then(() => {
-    if (notice) {
-      notice.innerHTML = `<i class="fas fa-check-circle" style="color: #00E676;"></i> পুনরায় কোড পাঠানো হয়েছে! আপনার জিমেইল চেক করুন।`;
-    }
-  });
+function autoFillOtp(code) {
+  const input = document.getElementById('otpInput');
+  if (input) {
+    input.value = code;
+    input.focus();
+  }
 }
 </script>
 

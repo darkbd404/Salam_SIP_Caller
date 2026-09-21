@@ -1,9 +1,9 @@
 {
-  "id": "/salam_sip_caller_v2_5_app",
+  "id": "/salam_sip_caller_v2_6_app",
   "name": "Salam SIP Caller - 09612 BTRC Verified",
   "short_name": "Salam SIP",
   "description": "09612 BTRC Officials Verified IP Telephony & SIP Caller with HD Audio/Video Calling, IP Messaging & Recharge",
-  "start_url": "./index.php?v=2.5",
+  "start_url": "./index.php?v=2.6",
   "scope": "./",
   "display": "standalone",
   "background_color": "#06110F",

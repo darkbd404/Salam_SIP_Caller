@@ -29,12 +29,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $fullIpNumber = IP_PREFIX . $filteredDigits;
 
-        // Check duplicate mobile or IP
+        // Check duplicate mobile, IP, or NID number
         $users = read_json_data(USER_JSON_FILE);
         $isDuplicate = false;
         foreach ($users as $u) {
+            if (($u['nidNumber'] ?? '') === $nidNumber) {
+                $error = 'এই জাতীয় পরিচয়পত্র (NID) নম্বর দিয়ে ইতিপূর্বে একটি একাউন্ট তৈরি করা হয়েছে। একই NID দিয়ে একাধিক একাউন্ট তৈরি করা যাবে না।';
+                $isDuplicate = true;
+                break;
+            }
             if (($u['mobileNumber'] ?? '') === $mobile) {
-                $error = 'এই মোবাইল নম্বর দিয়ে ইতিমধ্যে একাউন্ট রয়েছে।';
+                $error = 'এই মোবাইল নম্বর দিয়ে ইতিমধ্যে একাউন্ট রয়েছে।';
                 $isDuplicate = true;
                 break;
             }

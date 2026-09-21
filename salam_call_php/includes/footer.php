@@ -30,8 +30,8 @@
 
 </div> <!-- /app-container -->
 
-<script src="assets/js/app.js?v=2.5"></script>
-<script src="assets/js/dialer.js?v=2.5"></script>
+<script src="assets/js/app.js?v=2.6"></script>
+<script src="assets/js/dialer.js?v=2.6"></script>
 
 <?php if (isset($currentUser['ipNumber'])): ?>
 <script>
