@@ -4,7 +4,31 @@
  * 09612 BTRC Officials Verified IP Telephony
  */
 
-session_start();
+// Error handling & compatibility
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
+@ini_set('display_errors', '0');
+
+// Safe Session Initialization
+if (session_status() === PHP_SESSION_NONE) {
+    @session_start();
+}
+
+// PHP 7.x Polyfills for complete host compatibility
+if (!function_exists('str_starts_with')) {
+    function str_starts_with($haystack, $needle) {
+        return (string)$needle === '' || strncmp((string)$haystack, (string)$needle, strlen((string)$needle)) === 0;
+    }
+}
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle) {
+        return (string)$needle === '' || strpos((string)$haystack, (string)$needle) !== false;
+    }
+}
+if (!function_exists('str_ends_with')) {
+    function str_ends_with($haystack, $needle) {
+        return (string)$needle === '' || substr((string)$haystack, -strlen((string)$needle)) === (string)$needle;
+    }
+}
 
 // Paths
 define('BASE_DIR', __DIR__ . '/..');
@@ -99,7 +123,7 @@ function write_json_data($file_path, $data) {
     // Sync root user.json if modifying user.json
     if ($file_path === USER_JSON_FILE) {
         $rootUserJson = BASE_DIR . '/../user.json';
-        if (file_exists($rootUserJson) || is_writable(dirname($rootUserJson))) {
+        if (@file_exists($rootUserJson) || @is_writable(@dirname($rootUserJson))) {
             @file_put_contents($rootUserJson, $json);
         }
     }

@@ -51,7 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $allRecharges = read_json_data(RECHARGE_JSON_FILE);
-$myRecharges = array_filter($allRecharges, fn($r) => ($r['userIp'] ?? '') === $user['ipNumber']);
+$myRecharges = [];
+foreach ($allRecharges as $r) {
+    if (($r['userIp'] ?? '') === $user['ipNumber']) {
+        $myRecharges[] = $r;
+    }
+}
 
 include __DIR__ . '/includes/header.php';
 ?>

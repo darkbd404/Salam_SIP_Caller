@@ -151,7 +151,13 @@ include __DIR__ . '/includes/header.php';
     <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; text-align: center; border: 1px solid var(--card-border);">
       <div style="font-size: 10px; color: var(--text-muted);">পেন্ডিং রিচার্জ</div>
       <div style="font-size: 18px; font-weight: 700; color: #FFB300;">
-        <?php echo count(array_filter($recharges, fn($r) => $r['status'] === 'PENDING')); ?>
+        <?php 
+          $pendingCount = 0;
+          foreach ($recharges as $r) {
+              if (($r['status'] ?? '') === 'PENDING') $pendingCount++;
+          }
+          echo $pendingCount;
+        ?>
       </div>
     </div>
     <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; text-align: center; border: 1px solid var(--card-border);">

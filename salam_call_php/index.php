@@ -7,7 +7,11 @@ $recentCalls = read_json_data(CALLS_JSON_FILE);
 $myCalls = [];
 if ($currentUser) {
     $myIp = $currentUser['ipNumber'];
-    $myCalls = array_filter($recentCalls, fn($c) => ($c['callerId'] ?? '') === $myIp || ($c['calleeNumber'] ?? '') === $myIp);
+    foreach ($recentCalls as $c) {
+        if (($c['callerId'] ?? '') === $myIp || ($c['calleeNumber'] ?? '') === $myIp) {
+            $myCalls[] = $c;
+        }
+    }
     $myCalls = array_slice(array_reverse($myCalls), 0, 5);
 }
 

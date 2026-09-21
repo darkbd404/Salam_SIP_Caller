@@ -3,7 +3,12 @@ require_once __DIR__ . '/includes/config.php';
 $user = require_auth();
 
 $allCalls = read_json_data(CALLS_JSON_FILE);
-$userCalls = array_filter($allCalls, fn($c) => ($c['userId'] ?? 0) === $user['id'] || ($c['callerNumber'] ?? '') === $user['ipNumber']);
+$userCalls = [];
+foreach ($allCalls as $c) {
+    if (($c['userId'] ?? 0) === $user['id'] || ($c['callerNumber'] ?? '') === $user['ipNumber']) {
+        $userCalls[] = $c;
+    }
+}
 $userCalls = array_reverse($userCalls); // newest first
 
 include __DIR__ . '/includes/header.php';

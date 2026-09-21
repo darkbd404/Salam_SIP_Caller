@@ -34,7 +34,9 @@ foreach ($allMessages as $msg) {
 }
 
 // Sort conversations by most recent
-usort($conversations, fn($a, $b) => $b['timestamp'] <=> $a['timestamp']);
+usort($conversations, function($a, $b) {
+    return ($b['timestamp'] ?? 0) - ($a['timestamp'] ?? 0);
+});
 
 include __DIR__ . '/includes/header.php';
 ?>
