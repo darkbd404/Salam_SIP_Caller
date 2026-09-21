@@ -1,0 +1,6 @@
+{
+  "name": "Salam SIP Caller",
+  "description": "09612 BTRC Officials Verified IP Telephony & SIP Caller with HD Audio/Video Calling, IP Messaging & Recharge",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

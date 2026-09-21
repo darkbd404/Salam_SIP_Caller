@@ -1,0 +1,3 @@
+# Protect JSON Data files from direct public browser download
+Order deny,allow
+Deny from all

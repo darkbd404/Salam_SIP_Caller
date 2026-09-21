@@ -1,0 +1,161 @@
+<resources>
+    <string name="app_name">Salam SIP Caller</string>
+    <string name="app_tagline">09612 BTRC Officials Verified SIP Telephony</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_contacts">Contacts</string>
+    <string name="nav_dial">Dial</string>
+    <string name="nav_history">History</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Home Screen -->
+    <string name="greeting_morning">Good Morning</string>
+    <string name="greeting_afternoon">Good Afternoon</string>
+    <string name="greeting_evening">Good Evening</string>
+    <string name="your_ip_number">Your IP Number</string>
+    <string name="main_balance">Main Balance</string>
+    <string name="bonus_balance">Bonus Balance</string>
+    <string name="current_package">Current Package</string>
+    <string name="package_validity">Valid till</string>
+    <string name="recharge">Recharge</string>
+    <string name="buy_package">Buy Package</string>
+    <string name="quick_dial">Quick Dial</string>
+    <string name="recent_calls">Recent Calls</string>
+    <string name="favorite_contacts">Favorite Contacts</string>
+    <string name="service_status_active">IPTSP Active • Secure</string>
+    <string name="network_quality">Network</string>
+    <string name="network_excellent">Excellent</string>
+    <string name="network_good">Good</string>
+    <string name="network_fair">Fair</string>
+    <string name="network_poor">Poor</string>
+    <string name="promo_title">Special 40p/min Call Rate</string>
+    <string name="promo_subtitle">Call any Bangladesh mobile or landline at lowest authorized rate</string>
+
+    <!-- Dialer -->
+    <string name="enter_number_hint">Enter number or name</string>
+    <string name="dial_pad">Dial Pad</string>
+    <string name="paste_number">Paste</string>
+    <string name="clear_number">Clear</string>
+    <string name="add_to_contacts">Add to Contacts</string>
+    <string name="call_rate_notice">Authorized IPTSP Route • ৳ 0.40/min</string>
+    <string name="invalid_number">Please enter a valid Bangladesh number (e.g., 01XXXXXXXXX or 096XXXXXXXX)</string>
+
+    <!-- Call Screen -->
+    <string name="call_status_connecting">Connecting…</string>
+    <string name="call_status_ringing">Ringing…</string>
+    <string name="call_status_active">Call in progress</string>
+    <string name="call_status_hold">Call on hold</string>
+    <string name="call_status_reconnecting">Reconnecting…</string>
+    <string name="call_status_ended">Call ended</string>
+    <string name="call_status_busy">User is busy</string>
+    <string name="call_status_no_answer">No answer</string>
+    <string name="call_status_rejected">Call declined</string>
+    <string name="call_status_failed">Call failed</string>
+    <string name="btn_mute">Mute</string>
+    <string name="btn_unmute">Unmute</string>
+    <string name="btn_speaker">Speaker</string>
+    <string name="btn_bluetooth">Bluetooth</string>
+    <string name="btn_hold">Hold</string>
+    <string name="btn_unhold">Unhold</string>
+    <string name="btn_keypad">Keypad</string>
+    <string name="btn_end_call">End Call</string>
+    <string name="incoming_call_title">Incoming IP Call</string>
+    <string name="accept_call">Accept</string>
+    <string name="reject_call">Decline</string>
+    <string name="call_summary_title">Call Summary</string>
+    <string name="call_duration">Duration</string>
+    <string name="call_rate">Rate</string>
+    <string name="call_cost">Total Cost</string>
+    <string name="call_again">Call Again</string>
+    <string name="done">Done</string>
+
+    <!-- Contacts -->
+    <string name="contacts_title">Contacts</string>
+    <string name="search_contacts">Search contacts…</string>
+    <string name="all_contacts">All Contacts</string>
+    <string name="favorites">Favorites</string>
+    <string name="no_contacts">No contacts found</string>
+    <string name="contact_details">Contact Details</string>
+    <string name="call_contact">Audio Call</string>
+    <string name="message_contact">Message</string>
+    <string name="add_favorite">Add to Favorites</string>
+    <string name="remove_favorite">Remove Favorite</string>
+    <string name="block_contact">Block Number</string>
+    <string name="unblock_contact">Unblock Number</string>
+    <string name="new_contact">New Contact</string>
+    <string name="first_name">Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- History -->
+    <string name="call_history">Call History</string>
+    <string name="tab_all">All</string>
+    <string name="tab_incoming">Incoming</string>
+    <string name="tab_outgoing">Outgoing</string>
+    <string name="tab_missed">Missed</string>
+    <string name="no_call_history">No call history</string>
+    <string name="clear_history">Clear History</string>
+
+    <!-- Recharge & Balance -->
+    <string name="wallet_title">Balance &amp; Recharge</string>
+    <string name="instant_recharge">Instant Recharge</string>
+    <string name="select_amount">Select or Enter Amount</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="pay_bkash">bKash</string>
+    <string name="pay_nagad">Nagad</string>
+    <string name="pay_rocket">Rocket</string>
+    <string name="pay_cards">Card / Internet Banking</string>
+    <string name="btn_proceed_payment">Proceed to Pay</string>
+    <string name="transaction_history">Transaction History</string>
+    <string name="recharge_success">Recharge Successful!</string>
+    <string name="recharge_failed">Recharge Failed</string>
+
+    <!-- Packages -->
+    <string name="packages_title">Call Packages</string>
+    <string name="available_packages">Available Bundles</string>
+    <string name="pack_minutes">%1$d Minutes</string>
+    <string name="pack_validity_days">%1$d Days Validity</string>
+    <string name="buy_now">Purchase Now</string>
+    <string name="active_badge">Active</string>
+
+    <!-- Profile & Settings -->
+    <string name="profile_title">Profile</string>
+    <string name="account_info">Account Information</string>
+    <string name="settings_title">Settings</string>
+    <string name="setting_language">Language / ভাষা</string>
+    <string name="setting_theme">Appearance / Theme</string>
+    <string name="setting_audio">Audio &amp; Codec Settings</string>
+    <string name="setting_call">Call Routing &amp; SIP Settings</string>
+    <string name="setting_notifications">Notifications</string>
+    <string name="setting_blocked">Blocked Numbers</string>
+    <string name="setting_security">Security &amp; PIN</string>
+    <string name="setting_support">Helpdesk &amp; Support Tickets</string>
+    <string name="setting_admin_console">Admin Console</string>
+    <string name="setting_about">About Salam Call</string>
+    <string name="setting_terms">Terms of Service</string>
+    <string name="setting_privacy">Privacy Policy</string>
+    <string name="setting_logout">Log Out</string>
+
+    <!-- Auth & Onboarding -->
+    <string name="login_title">Login to Salam Call</string>
+    <string name="login_subtitle">Enter your registered Bangladesh mobile number</string>
+    <string name="register_title">Create Account</string>
+    <string name="register_subtitle">Register with national ID verified Bangladesh mobile number</string>
+    <string name="enter_mobile">01XXXXXXXXX</string>
+    <string name="enter_pin">Enter 4-digit PIN</string>
+    <string name="enter_otp">Enter 6-digit OTP</string>
+    <string name="verify_otp">Verify OTP</string>
+    <string name="resend_otp">Resend OTP</string>
+    <string name="continue_btn">Continue</string>
+    <string name="already_have_account">Already have an account? Login</string>
+    <string name="dont_have_account">New to Salam Call? Register</string>
+
+    <!-- Common -->
+    <string name="bdt_symbol">৳</string>
+    <string name="per_minute">/ min</string>
+    <string name="mins">mins</string>
+    <string name="sec">s</string>
+    <string name="insufficient_balance">Insufficient balance. Please recharge to make this call.</string>
+</resources>
